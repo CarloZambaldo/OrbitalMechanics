@@ -62,7 +62,7 @@ function [ORBIT_OBJ] = car2kep(r_vect, v_vect, mu)
     e_norm = norm(e_vect);
 
     % argument of pericentre [rad]
-    if e==0
+    if isequal(e_vect(:),zeros(3,1))
         w = 0; % by convention
     else
         if e_vect(3) >=0
@@ -82,5 +82,10 @@ function [ORBIT_OBJ] = car2kep(r_vect, v_vect, mu)
 
 
     %% store the result in ORBIT object
-    ORBIT_OBJ = ORBIT(a,e_vect,i,O,w,theta,mu);
-    
+    ORBIT_OBJ = ORBIT(a,e_norm,i,O,w,theta,mu);
+    ORBIT_OBJ.h_vect = h_vect;
+    ORBIT_OBJ.r0 = r_vect;
+    ORBIT_OBJ.v0 = v_vect;
+    ORBIT_OBJ.e_vect = e_vect;
+    ORBIT_OBJ.type = type;
+end
