@@ -1,17 +1,12 @@
-function [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
-    % [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
+function [r_vect, v_vect] = cartesian(orbit_obj, theta)
+    % [r_vect, v_vect] = cartesian(orbit_obj)
     %
     % the function outputs the corresponding cartesian coordinates of a
     % given orbit
     %
     %  INPUT:
-    %     a        : semi-major axis [km]
-    %     e        : eccentricity [-]
-    %     i        : inclination [rad]
-    %     O        : RAAN [rad]
-    %     w        : anomaly of pericentre [rad]
-    %     theta    : true anomaly (usually initial position) [rad]
-    %     mu       : gravitational constant, for Earth use astroConstants(13)
+    %     - orbit_obj   :   orbit object, defined with ORBIT
+    %     - theta       :   (optional) true anomaly -> if not inserted uses orbit_obj.theta
     %     
     %
     %  OUTPUT:
@@ -20,14 +15,18 @@ function [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
     %
     %  note: if nargoud == 1 the function outputs the state vector:
     %     - y_vect      :   state vector such that y_vect = [r_vect(:); v_vect(:)]
-    % CHANGELOG:
-    % [Guglielmo Gomiero 26/11/2022]:
-    % -inputs and outputs set to be arrays, do not use objects
+
 
     %% initialisation
-    % Ensure theta is row (needed for following matrices)
-    if iscolumn(theta)
-        theta = theta';
+    a = orbit_obj.a;
+    e = orbit_obj.e;
+    i = orbit_obj.i;
+    O = orbit_obj.O;
+    w = orbit_obj.w;
+    mu = orbit_obj.mu;
+
+    if nargin<2
+        theta = orbit_obj.theta;
     end
 
     % rotation matrix between perifocal to geocentric frame
@@ -36,12 +35,12 @@ function [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
                              sin(i)*sin(w),                        sin(i)*cos(w),                cos(i)  ];
     
     % parameters
-    p = a*(1-e^2);        % orbital parameter
-    r = p./(1+e.*cos(theta)); % radius
+    p = orbit_obj.p;        % orbital parameter
+    r = p/(1+e*cos(theta)); % radius
 
     %% r_vect and v_vect (in the PERIFOCAL FRAME)
-    r_vect = r .* [cos(theta); sin(theta); zeros(1,length(theta))];
-    v_vect = sqrt(mu/abs(p)) .* [-sin(theta); e+cos(theta); zeros(1,length(theta))];
+    r_vect = r * [cos(theta); sin(theta); 0];
+    v_vect = sqrt(mu/abs(p)) * [-sin(theta); e+cos(theta); 0];
 
     %% transform r_vect and v_vect in the GEOCENTRIC FRAME
     r_vect = R_PF_GE * r_vect;
