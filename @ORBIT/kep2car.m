@@ -26,9 +26,7 @@ function [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
 
     %% initialisation
     % Ensure theta is row (needed for following matrices)
-    if iscolumn(theta)
-        theta = theta';
-    end
+    theta = theta(:)';
 
     % rotation matrix between perifocal to geocentric frame
     R_PF_GE = [ cos(w)*cos(O)-sin(w)*cos(i)*sin(O),	-sin(O)*cos(i)*cos(w)-cos(O)*sin(w),	sin(i)*sin(O);

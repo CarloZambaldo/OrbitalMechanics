@@ -20,7 +20,7 @@ classdef ORBIT
     %    rA        : radius of apoapsis
     %    rP        : radius of periapsis
     %    theta_inf : true anomaly asymptote
-    %    Delta     : deflection
+    %    delta     : deflection
     %    v_inf     : hyperbolic eccess speed
     %    type      : char [+, 0, -] respectively [prograde, polar, retrograde]
     %
@@ -60,7 +60,8 @@ classdef ORBIT
     %   - to define r0 and v0 with kep2car use obj propreties to avoid possible bugs
     %   - added cartesian and keplerian methods (object-oriented kep2car
     %   and car2kep counterparts)
-    
+    % [Carlo Zambaldo 06/12/2022]
+    %   - fixed bug: for hyperbolas, if a>0 then obj.a is set to negative
 
     properties
         a        {mustBeNumeric}                        % [km]
@@ -84,7 +85,7 @@ classdef ORBIT
         rP       {mustBeNumeric}                        % radius of PERICENTRE
 
         theta_inf{mustBeNumeric}                        % true anomaly asymptote
-        Delta    {mustBeNumeric}                        % deflection
+        delta    {mustBeNumeric}                        % deflection
         v_inf    {mustBeNumeric}
 
         type     % ceph (circular, elliptical, parabolic, hyperbolic); +=- (prograde,polar,retrograde)
@@ -96,7 +97,6 @@ classdef ORBIT
         % Definition of ORBIT
         function obj = ORBIT(a,e,i,O,w,theta,mu)
             if nargin~=0
-                obj.a = a;
                 obj.e = e;
                 obj.i = wrapToPi(i);    % [0,pi]
                 obj.O = wrapTo2Pi(O);   % [0,2pi]
@@ -123,7 +123,7 @@ classdef ORBIT
                         end
                         obj.T = NaN; % Not defined if hyperbolic trajectory
                         obj.theta_inf = acos(1./(-e)); % true anomaly asymptote
-                        obj.Delta = 2*asin(1/e);       % deflection
+                        obj.delta = 2*asin(1/e);       % deflection
     
                     else                 %%% ELLIPSE/CIRCLE
                         obj.T = 2*pi*sqrt(a^3/mu);
@@ -131,6 +131,7 @@ classdef ORBIT
                     % define here p to avoid replacing p of parabola
                     obj.p = a*(1-e^2);
                 end
+                obj.a = a;
                 obj.energy = -mu/(2*a);
 
                 % defining extra values (filling the "gaps")
