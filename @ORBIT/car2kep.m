@@ -11,11 +11,11 @@ function [a,e_norm,i,O,w,theta] = car2kep(r_vect, v_vect, mu)
     %
     %  OUTPUT:
     %     - a:              semi-major axis
-    %       e_norm:         eccentricity
-    %       i:              inclination
-    %       O:              RAAN
-    %       w:              argument of pericenter
-    %       theta:          true anomaly
+    %     - e_norm:         eccentricity
+    %     - i:              inclination
+    %     - O:              RAAN
+    %     - w:              argument of pericenter
+    %     - theta:          true anomaly
     %
     %
     % CHANGELOG:
@@ -25,9 +25,14 @@ function [a,e_norm,i,O,w,theta] = car2kep(r_vect, v_vect, mu)
     %   - fixed w calculation when i = 0
     % [Carlo Zambaldo 30/11/2022]
     %   - added "=" to expression "elseif e_vect(3) > 0"
+    % [Carlo Zambaldo 08/12/2022]
+    %   - solved bug for which if i=pi n_vect would become NaN (added
+    %     condition "abs(i-pi) <= toll" in RAAN computation
+    % [Carlo Zambaldo 14/12/2022]
+    %   - changed the value for toll (set to eps(1e-3))
 
     % tollerance for numerical error
-    toll = 1e-13;
+    toll = eps(1e-3);%1e-13;
 
     % to be sure r and v are column vectors
     r_vect = r_vect(:);
@@ -52,8 +57,12 @@ function [a,e_norm,i,O,w,theta] = car2kep(r_vect, v_vect, mu)
     n_vect = n_vect./norm(n_vect);
     
     % RAAN [rad]
-    if i <= toll
-        i = 0; % to "remove" numerical error
+    if abs(i) <= toll || abs(i-pi) <= toll
+        if abs(i) <= toll % to "remove" numerical error on i
+            i = 0; 
+        else
+            i = pi;
+        end
         O = 0; % by convention (RAAN not defined)
         n_vect = [1;0;0];
     else

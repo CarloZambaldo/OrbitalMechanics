@@ -1,5 +1,5 @@
-function [r_vect, v_vect] = cartesian(orbit_obj, theta)
-    % [r_vect, v_vect] = cartesian(orbit_obj)
+function [r_vect, v_vect] = cartesian(obj, theta)
+    % [r_vect, v_vect] = cartesian(orbit_obj, theta)
     %
     % the function outputs the corresponding cartesian coordinates of a
     % given orbit
@@ -13,29 +13,28 @@ function [r_vect, v_vect] = cartesian(orbit_obj, theta)
     %     - r_vect      :   vector containing the x,y,z components of position [km]
     %     - v_vect      :   vector containing the x,y,z components of the velocity [km/s]
     %
-    %  note: if nargoud == 1 the function outputs the state vector:
+    %  note: if nargout == 1 the function outputs the state vector:
     %     - y_vect      :   state vector such that y_vect = [r_vect(:); v_vect(:)]
 
 
     %% initialisation
-    a = orbit_obj.a;
-    e = orbit_obj.e;
-    i = orbit_obj.i;
-    O = orbit_obj.O;
-    w = orbit_obj.w;
-    mu = orbit_obj.mu;
+    e = obj.e;
+    i = obj.i;
+    O = obj.O;
+    w = obj.w;
+    mu = obj.mu;
 
     if nargin<2
-        theta = orbit_obj.theta;
+        theta = obj.theta;
     end
 
     % rotation matrix between perifocal to geocentric frame
-    R_PF_GE = [ cos(w)*cos(O)-sin(w)*cos(i)*sin(O),	-sin(O)*cos(i)*cos(w)-cos(O)*sin(w),	sin(i)*sin(O);
-                cos(O)*cos(i)*sin(w)+sin(O)*cos(w), cos(O)*cos(i)*cos(w)-sin(O)*sin(w),    -cos(O)*sin(i);
-                             sin(i)*sin(w),                        sin(i)*cos(w),                cos(i)  ];
+   R_PF_GE = [ cos(w)*cos(O)-sin(w)*cos(i)*sin(O),	-sin(O)*cos(i)*cos(w)-cos(O)*sin(w),	sin(i)*sin(O);
+               cos(O)*cos(i)*sin(w)+sin(O)*cos(w), cos(O)*cos(i)*cos(w)-sin(O)*sin(w),    -cos(O)*sin(i);
+                        sin(i)*sin(w),                        sin(i)*cos(w),                  cos(i)     ];
     
     % parameters
-    p = orbit_obj.p;        % orbital parameter
+    p = obj.p;        % orbital parameter
     r = p/(1+e*cos(theta)); % radius
 
     %% r_vect and v_vect (in the PERIFOCAL FRAME)

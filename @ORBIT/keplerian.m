@@ -38,8 +38,12 @@ function [orbit_obj] = keplerian(r_vect, v_vect, mu)
     n_vect = n_vect./norm(n_vect);
     
     % RAAN [rad]
-    if i <= toll
-        i = 0; % to "remove" numerical error
+    if abs(i) <= toll || abs(i-pi) <= toll
+        if abs(i) <= toll % to "remove" numerical error on i
+            i = 0; 
+        else
+            i = pi;
+        end
         O = 0; % by convention (RAAN not defined)
         n_vect = [1;0;0];
     else

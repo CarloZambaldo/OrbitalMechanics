@@ -20,6 +20,7 @@ function [r_vect, v_vect] = kep2car(a,e,i,O,w,theta,mu)
     %
     %  note: if nargoud == 1 the function outputs the state vector:
     %     - y_vect      :   state vector such that y_vect = [r_vect(:); v_vect(:)]
+    %
     % CHANGELOG:
     % [Guglielmo Gomiero 26/11/2022]:
     % -inputs and outputs set to be arrays, do not use objects

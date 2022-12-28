@@ -5,25 +5,40 @@ classdef ASTRO
     %    - planetName   
     %    - mu           body constant (mu = mass * G) [km^3/s^2]:
     %    - R            radius of the body
+    %    - pos          position of the Astro (useful for plotAstro)
+    %
+    %
+    % deprecated propreties:
     %    - r_SOI        radius of sphere of influence
+    %
+    % --------------------------------------
+    % Carlo Zambaldo (info@carlozambaldo.it)
+    %       last update: Dec 20, 2022
+    % --------------------------------------
 
     properties
-        name
-        mu      {mustBeNumeric}
-        R       {mustBeNumeric}
-        r_SOI   {mustBeNumeric}
+        name                        % name of the astro
+        mu      {mustBeNumeric}     % body constant (mu = mass * G)
+        R       {mustBeNumeric}     % radius of the body
+        r_SOI   {mustBeNumeric}     % radius of sphere of influence
+        pos     (3,1){mustBeVector} % position of the planet (default [0;0;0])
+        omega   {mustBeNumeric}     % rotation speed of planet on its axis [rad/s]
+        atmosphere                  % [km] height of the atmosphere of the planet
     end
 
     methods
-        function [obj] = ASTRO(name)
+        function [obj] = ASTRO(name,position)
             if nargin ~= 0
                 switch upper(name)
                     case 'EARTH'
                         obj.mu = astroConstants(13);
                         obj.R  = astroConstants(23);
+                        obj.omega = 2*pi/(3600*23.9344696); % (sidereal day)
+                        obj.atmosphere = 200;
                     case 'SUN'
                         obj.mu = astroConstants(4);
                         obj.R = astroConstants(3);
+                        obj.atmosphere = 0;
                     case 'MERCURY'
                         obj.mu = astroConstants(11);
                         obj.R = astroConstants(21);
@@ -52,11 +67,64 @@ classdef ASTRO
                         obj.mu = astroConstants(20);
                         obj.R = astroConstants(30);
                     otherwise
-                        error("Error occurred in the definition of type ASTRO variable");
+                        warning("Astro named """+name+""" not found using Earth as default.");
+                        obj.mu = astroConstants(13);
+                        obj.R  = astroConstants(23);
+                        name = "noname";
                 end
                 obj.name = upper(name);
                 obj.r_SOI = obj.R * (obj.mu/astroConstants(4)) ^ (2/5);
+
+                if nargin > 1
+                    obj.pos = position;
+                end
             end
         end
+
+        function [astro_plot] = plotAstro(obj, scale, position)
+            % Options
+            npanels = 180;   % Number of globe panels around the equator deg/panel = 360/npanels
+            alpha   = 1;     % globe transparency level, 1 = opaque, through 0 = invisible
+            body_pos = obj.pos;
+
+            if nargin>1
+                rho = scale * obj.R;
+                if nargin>2
+                    body_pos = position(:);
+                end
+            else
+                rho = obj.R; % if no scale use default radius of planet
+            end
+            
+            if obj.name == ""
+                error("ASTRO object name not defined.");
+            end
+
+            % reads in image
+            cdata = imread(strcat(lower(obj.name),'.png'));
+            
+            % set space
+            hold on;
+            grid on;
+            axis image;
+            view(30,30);
+            
+            % draw planet
+            [xea, yea, zea] = ellipsoid(body_pos(1), body_pos(2), -body_pos(3), rho, rho, rho, npanels);
+            astro_plot = surf(xea, yea, -zea, 'FaceColor', 'none', 'EdgeColor', 0.5*[1 1 1]);
+            set(astro_plot, 'FaceColor', 'texturemap', 'CData', cdata, 'FaceAlpha', alpha, 'EdgeColor', 'none');
+    
+            % legend on axis
+            xlabel("X [km]");
+            ylabel("Y [km]");
+            zlabel("Z [km]");
+        end
+
+        function [obj] = updatePosition(obj, pos)
+            % right now this function is more useless than useful but who
+            % knows... maybe it will be useful.
+            obj.pos = pos(:);
+        end
     end
+
 end
