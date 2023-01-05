@@ -9,7 +9,7 @@ function [a_req, T_req] = repeating_groundTrack(k,m,omega_planet,mu)
     % 
     % OUTPUTs:
     %   - a_req         = required semimajor axis
-    %   - T_req         = required orbital periot
+    %   - T_req         = required orbital period
     %  to have a repeating groundtrack
     %
     % --------------------------------------

@@ -14,13 +14,15 @@ function fun = odefun_2bp(~, y, param)
     v = y(4:6);
 
     % extract parameters
-    if isempty(param) || ~isfield(param,'mu')
+    if ~isstruct(param)
          % note: this is to maintain backward compatibility with code 
          % programmed with an older version of this function, which once
          % required mu as input and not a struct containing mu (param.mu).
          mu = param;
-    else
+    elseif isfield(param,'mu')
         mu = param.mu;
+    else
+        error("Field not recognised.");
     end
 
     % state vector
