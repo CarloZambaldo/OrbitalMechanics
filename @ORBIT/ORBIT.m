@@ -259,7 +259,7 @@ classdef ORBIT
         end
 
         % Time of flight
-        delta_time = TOF(obj, thetas);
+        [delta_time, intermTimes] = TOF(obj, theta_vect)
 
         % delta_theta between delta_t
         delta_theta = AOF(obj, delta_time, toll)

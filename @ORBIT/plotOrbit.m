@@ -106,6 +106,5 @@ function [r_prop_vect] = plotOrbit(obj,theta_vect,d_theta,grafica,theta_segnato)
         else
             plot3(theta_segnato(1), theta_segnato(2), theta_segnato(3), 'r*', 'LineWidth',1.3);
         end
-        hold;
     end
 end

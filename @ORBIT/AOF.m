@@ -16,6 +16,18 @@ function [delta_theta, theta_vect] = AOF(obj, time_vect)
 
     f = @(E) E - obj.e*sin(E) - sqrt(obj.mu/obj.a^3) * delta_time;
    
+
+ %   n = 1/sqrt(a^3/mu);
+ %   if nargin < 6
+ %       E_0 = n*t + e*sin(n*t)/(1-sin(n*t+e)+sin(n*t));
+ %       warning("The initial guess has been computed automatically.");
+ %   end
+ %   fun = @(E) E-e.*sin(E)-n.*(t-t_0);
+ %   %options = optimset('TolX', 1e-13);
+ %   %E_fzero = fzero(fun, E_0, options);
+ %   E_fsolve = fsolve(fun, E_0)
+
+
     xvect = fzero(f,0);
 
     theta_i = 0;

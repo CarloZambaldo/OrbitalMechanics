@@ -99,12 +99,25 @@ function [t,y] = propagateOrbit(obj,tspan,options,grafica,r_segnato)
         if nargin < 4 % tratto del disegno impostato di default
             grafica = '-';
         end
+        if (nargin >= 3)
+            if (~isempty(options) && isfield(options,'propagationType'))
+                if ~isequal(lower(options.propagationType),'odefun_2bp') || ~isequal(lower(options.propagationType),'odefun_2bp_perturbed')
+                    warning("This method is not efficient for only plotting. Consider using propagationType = 'odefun_2bp_perturbed'.");
+                    for hh = 1:length(t)   % translate the state vector in cartesian coordinates
+                        [rr, vv] = ORBIT.kep2car(y(hh,1),y(hh,2),y(hh,3),y(hh,4),y(hh,5),y(hh,6),param.mu);
+                        y(hh,:) = [rr(:)', vv(:)'];
 
-        if ~isequal(lower(options.propagationType),'odefun_2bp') && ~isequal(lower(options.propagationType),'odefun_2bp_perturbed')
-            warning("This method is not efficient for only plotting. Consider using propagationType = 'odefun_2bp_perturbed'.");
-            for hh = 1:length(t)   % translate the state vector in cartesian coordinates
-                [rr, vv] = ORBIT.kep2car(y(hh,1),y(hh,2),y(hh,3),y(hh,4),y(hh,5),y(hh,6),param.mu);
-                y(hh,:) = [rr(:)', vv(:)'];
+                        % evolution of the perturbed orbit (changing colour plot)
+%                         c = 1:numel(y);      %# colors
+%                         h = surface([y(:,1), y(:,1)], [y(:,2), y(:,2)], [y(:,3), y(:,3)], [c(:), c(:)], 'EdgeColor','flat', 'FaceColor','none');
+%                         barra = colorbar('Ticks',linspace(c(1),c(end),7),'TickLabels',linspace(t(1)./60,t(end)./60,7)); % nota: la colorbar rappresenta il numero di elementi del tempo (t) / la discretizzazione temporale
+%                         barra.Label.String = 'time [min]';
+%                         xlabel("X [km]");
+%                         ylabel("Y [km]");
+%                         zlabel("Z [km]");
+%                         title("Perturbed orbit evolution");
+                    end
+                end
             end
         end
 
