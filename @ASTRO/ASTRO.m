@@ -8,19 +8,19 @@ classdef ASTRO
     %    - pos          position of the Astro (useful for plotAstro)
     %
     %
-    % deprecated propreties:
-    %    - r_SOI        radius of sphere of influence
-    %
     % --------------------------------------
     % Carlo Zambaldo (info@carlozambaldo.it)
     %       last update: Dec 20, 2022
     % --------------------------------------
+    %
+    %  TO DO:
+    %   add a method "ephemeris" which uses uplanet or ephNEO to compute the
+    %   ephemeris of the astro object
 
     properties
         name                        % name of the astro
         mu      {mustBeNumeric}     % body constant (mu = mass * G)
         R       {mustBeNumeric}     % radius of the body
-        r_SOI   {mustBeNumeric}     % radius of sphere of influence
         pos     (3,1){mustBeVector} % position of the planet (default [0;0;0])
         omega   {mustBeNumeric}     % rotation speed of planet on its axis [rad/s]
         atmosphere                  % [km] height of the atmosphere of the planet
@@ -73,7 +73,6 @@ classdef ASTRO
                         name = "noname";
                 end
                 obj.name = upper(name);
-                obj.r_SOI = obj.R * (obj.mu/astroConstants(4)) ^ (2/5);
 
                 if nargin > 1
                     obj.pos = position;
