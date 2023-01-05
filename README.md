@@ -32,8 +32,8 @@ ORBIT is an object describing an orbit, the principal fields are:
                  and [+,=,-] respectively prograde, polar, retrograde
 
 
- ------------------ brief explanation of the class ------------------
-  DEFINITION OF AN ORBIT OBJECT
+### brief explanation of the class
+   DEFINITION OF AN ORBIT OBJECT
     the orbit can be defined in parametrical form by inserting all 7
     parameters like: obj = ORBIT(a,e,i,O,w,theta,mu)
     if the orbit is given in cartesian form use the function keplerian to
@@ -79,7 +79,7 @@ ORBIT is an object describing an orbit, the principal fields are:
      to check if a position vector is on the orbit use isOnOrbit
  
 
- ------------------ list of methods ------------------
+### list of methods
  methods:
   - [t,y] = propagateOrbit(obj,tspan,options,grafica,r_segnato);
   - [r_prop_vect] = plotOrbit(obj,theta_vect,d_theta,grafica,theta_segnato);
@@ -102,7 +102,7 @@ ORBIT is an object describing an orbit, the principal fields are:
 
 
 
- EXTREME WARNING
+### EXTREME WARNING
    THE ORBIT OBJECT TO WORK PROPERLY HAS TO BE IN A FOLDER NAMED
    PRECISELY "@ORBIT" WITH ALL ITS METHODS, THIS FOLDER HAS INDEED 
    TO BE ADDED TO THE PATH. NO EXCEPTIONS CAN BE MADE.
