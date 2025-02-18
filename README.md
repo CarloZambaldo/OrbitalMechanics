@@ -2,11 +2,11 @@
 ORBIT and ASTRO classes allow to perform computations and plots for Orbital Mechanics.
 
 > [!NOTE]
-> I really want to really thank my project team: Andrea Zosi, Guglielmo Gomiero and Lorenzo Sekules
+> I want to really thank my project team: Andrea Zosi, Guglielmo Gomiero and Lorenzo Sekules.
 > This work is licensed under a Creative Commons Attribution-NonCommercial 4.0 International License.
 
 > [!WARNING]
-> THE ORBIT OBJECT TO WORK PROPERLY HAS TO BE IN A FOLDER NAMED
+> TO WORK PROPERLY, THE ORBIT OBJECT HAS TO BE IN A FOLDER NAMED
 > PRECISELY "@ORBIT" WITH ALL ITS METHODS, THIS FOLDER HAS INDEED 
 > TO BE ADDED TO THE PATH. NO EXCEPTIONS CAN BE MADE. NOTE: THE SAME APPLIES TO "@ASTRO".
 
