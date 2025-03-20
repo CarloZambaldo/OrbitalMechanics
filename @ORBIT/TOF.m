@@ -56,7 +56,7 @@ function [delta_time, intermTimes] = TOF(obj, theta_vect)
             t_1 = t_1 - obj.T;
         end
 
-        E_2_unwrapped = wrapTo2Pi(2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_f/2) ));
+        E_2_unwrapped = 2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_f/2) );
         E_2   = wrapTo2Pi(E_2_unwrapped);
         t_2 = obj.T/(2*pi) * ( E_2 - obj.e*sin(E_2) );
         if E_2_unwrapped ~= E_2
