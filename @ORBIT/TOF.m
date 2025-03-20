@@ -5,7 +5,7 @@ function [delta_time, intermTimes] = TOF(obj, theta_vect)
     % from theta_vect(1) and ending on theta_vect(2)
     %
     % INPUT:
-    %   theta_vect = [theta_i, theta_f]
+    %   theta_vect = [theta_i, theta_f]  -> VECTOR IN RADIANS
     %
     % OUTPUT:
     %   delta_time = ToF between theta_i and theta_f on orbit "obj"
@@ -23,11 +23,11 @@ function [delta_time, intermTimes] = TOF(obj, theta_vect)
     theta_f = theta_vect(2);
     
     if obj.e < 1 % for ellipses and circles
-        if theta_i < 0 || theta_f < 0 
-            % note that this function only works with positive angles.
-            theta_i = wrapTo2Pi(theta_i);
-            theta_f = wrapTo2Pi(theta_f);
-        end
+        %if theta_i < 0 || theta_f < 0 
+        %    % note that this function only works with positive angles.
+        %    theta_i = (theta_i);
+        %    theta_f = (theta_f);
+        %end
     elseif obj.e>1 && (abs(theta_i)>obj.theta_inf || abs(theta_f)>obj.theta_inf)
         error("The given thetas are out of range for this hyperbolic trajectory.");
     end
@@ -49,11 +49,19 @@ function [delta_time, intermTimes] = TOF(obj, theta_vect)
     
     % ELLIPSE 
     elseif obj.e<1
-        E_1   = wrapTo2Pi(2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_i/2) ));
+        E_1_unwrapped = 2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_i/2) );
+        E_1   = wrapTo2Pi(E_1_unwrapped);
         t_1 = obj.T/(2*pi) * ( E_1 - obj.e*sin(E_1) );
+        if E_1_unwrapped ~= E_1
+            t_1 = t_1 - obj.T;
+        end
 
-        E_2   = wrapTo2Pi(2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_f/2) ));
+        E_2_unwrapped = wrapTo2Pi(2*atan( sqrt((1-obj.e)/(1+obj.e)) * tan(theta_f/2) ));
+        E_2   = wrapTo2Pi(E_2_unwrapped);
         t_2 = obj.T/(2*pi) * ( E_2 - obj.e*sin(E_2) );
+        if E_2_unwrapped ~= E_2
+            t_2 = t_2 - obj.T;
+        end
    
     % PARABOLA
     elseif obj.e==1
